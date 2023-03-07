@@ -17,7 +17,6 @@ const createUser = async (req, res) => {
   } catch (e) {
     console.error(e);
     const errors = Object.values(e.errors).map((err) => err.message);
-
     return res.status(500).json({ message: errors.join(', ') });
   }
 };

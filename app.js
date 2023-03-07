@@ -14,10 +14,17 @@ app.use(bodyParser.json());
 
 app.use('/users', router);
 
-mongoose.connect('mongodb://127.0.0.1:27017/mestodb', {
+app.use((req, res, next) => {
+  req.user = {
+    _id: '64074943b1d6d71b1df57798', //  _id созданного пользователя
+  };
+
+  next();
+});
+
+mongoose.set('strictQuery', true);
+mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
-  useCreateIndex: true,
-  userFindAndModify: false,
 }, () => {
   console.log('Connected to MongoDB!');
   app.listen(PORT, () => {
