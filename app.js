@@ -2,7 +2,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
 const bodyParser = require('body-parser');
-const router = require('./routes/users');
+const userRouter = require('./routes/users');
+const cardRouter = require('./routes/cards');
 // Слушаем 3000 порт
 const { PORT = 3000 } = process.env;
 
@@ -12,7 +13,9 @@ app.use(express.static(path.join(__dirname)));
 
 app.use(bodyParser.json());
 
-app.use('/users', router);
+app.use('/users', userRouter);
+
+app.use('/cards', cardRouter);
 
 app.use((req, res, next) => {
   req.user = {
