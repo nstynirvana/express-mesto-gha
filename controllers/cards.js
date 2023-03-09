@@ -1,5 +1,6 @@
 const Card = require('../models/card');
 const {
+  // BadRequestError,
   NotFoundError,
 } = require('../errors/errors');
 const {
@@ -13,8 +14,7 @@ const getCards = async (req, res) => {
     const cards = await Card.find({});
     cards.populate('owner');
     return res.status(SUCCESS_CODE_OK).json(cards);
-  } catch (e) {
-    console.error(e);
+  } catch (err) {
     return res.status(ERROR_CODE_DEFAULT).json({ message: 'Произошла ошибка' });
   }
 };
@@ -24,11 +24,10 @@ const createCard = async (req, res) => {
     const { name, link } = req.body;
     const ownerId = req.user._id;
     const card = await Card.create({ name, link, owner: ownerId });
+    res.send(card);
     return res.status(SUCCESS_CODE_CREATED).json(card);
-  } catch (e) {
-    console.error(e);
-    const errors = Object.values(e.errors).map((err) => err.message);
-    return res.status(ERROR_CODE_DEFAULT).json({ message: errors.join(', ') });
+  } catch (err) {
+    return res.status(ERROR_CODE_DEFAULT).json({ message: 'Произошла ошибка' });
   }
 };
 
@@ -41,8 +40,7 @@ const deleteCardById = async (req, res) => {
       return res.status(NotFoundError).json({ message: 'Карточка не найдена' });
     }
     return res.status(SUCCESS_CODE_OK).json(card);
-  } catch (e) {
-    console.error(e);
+  } catch (err) {
     return res.status(ERROR_CODE_DEFAULT).json({ message: 'Произошла ошибка' });
   }
 };
@@ -59,8 +57,7 @@ const likeCard = async (req, res) => {
       return res.status(NotFoundError).json({ message: 'Карточка не найдена' });
     }
     return res.status(SUCCESS_CODE_OK).json(card);
-  } catch (e) {
-    console.error(e);
+  } catch (err) {
     return res.status(ERROR_CODE_DEFAULT).json({ message: 'Произошла ошибка' });
   }
 };
@@ -77,8 +74,7 @@ const dislikeCard = async (req, res) => {
       return res.status(NotFoundError).json({ message: 'Карточка не найдена' });
     }
     return res.status(SUCCESS_CODE_OK).json(card);
-  } catch (e) {
-    console.error(e);
+  } catch (err) {
     return res.status(ERROR_CODE_DEFAULT).json({ message: 'Произошла ошибка' });
   }
 };

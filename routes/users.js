@@ -12,8 +12,8 @@ const {
 
 userRouter.get('/', getUsers);
 userRouter.post('/', createUser);
-userRouter.get('/:userId', getUserById);
 userRouter.patch('/me', updateUser);
+userRouter.get('/:userId', getUserById);
 userRouter.patch('/me/avatar', updateAvatar);
 
 module.exports = userRouter; // экспортировали роутер

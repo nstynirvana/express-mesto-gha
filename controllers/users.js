@@ -1,5 +1,6 @@
 const User = require('../models/user');
 const {
+  BadRequestError,
   NotFoundError,
 } = require('../errors/errors');
 const {
@@ -12,8 +13,7 @@ const getUsers = async (req, res) => {
   try {
     const users = await User.find({});
     return res.status(SUCCESS_CODE_OK).json(users);
-  } catch (e) {
-    console.error(e);
+  } catch (err) {
     return res.status(ERROR_CODE_DEFAULT).json({ message: 'Произошла ошибка' });
   }
 };
@@ -22,24 +22,24 @@ const createUser = async (req, res) => {
   try {
     const user = await User.create(req.body);
     return res.status(SUCCESS_CODE_CREATED).json(user);
-  } catch (e) {
-    console.error(e);
-    const errors = Object.values(e.errors).map((err) => err.message);
-    return res.status(ERROR_CODE_DEFAULT).json({ message: errors.join(', ') });
+  } catch (err) {
+    return res.status(ERROR_CODE_DEFAULT).json({ message: 'Произошла ошибка' });
   }
 };
 
 const getUserById = async (req, res) => {
   try {
-    const { id } = req.params;
-    const user = await User.findById(id);
-    if (user === null) {
-      return res.status(NotFoundError).json({ message: 'Пользователь не найден' });
+    const { userId } = req.params;
+    const user = await User.findById(userId);
+    if (!user) {
+      res.status(NotFoundError).json({ message: 'Пользователь не найден' });
     }
-    return res.status(SUCCESS_CODE_OK).json(user);
-  } catch (e) {
-    console.error(e);
-    return res.status(ERROR_CODE_DEFAULT).json({ message: 'Произошла ошибка' });
+    res.send(user);
+    res.status(SUCCESS_CODE_OK).json(user);
+  } catch (err) {
+    if (err.name === 'CastError') {
+      res.status(BadRequestError).json({ message: 'Неверный формат данных' });
+    }
   }
 };
 
@@ -56,8 +56,7 @@ const updateUser = async (req, res) => {
       return res.status(NotFoundError).json({ message: 'Пользователь не найден' });
     }
     return res.status(SUCCESS_CODE_OK).json(user);
-  } catch (e) {
-    console.error(e);
+  } catch (err) {
     return res.status(ERROR_CODE_DEFAULT).json({ message: 'Произошла ошибка' });
   }
 };
@@ -75,8 +74,7 @@ const updateAvatar = async (req, res) => {
       return res.status(NotFoundError).json({ message: 'Пользователь не найден' });
     }
     return res.status(SUCCESS_CODE_OK).json(user);
-  } catch (e) {
-    console.error(e);
+  } catch (err) {
     return res.status(ERROR_CODE_DEFAULT).json({ message: 'Произошла ошибка' });
   }
 };
