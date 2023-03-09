@@ -39,8 +39,46 @@ const deleteCardById = async (req, res) => {
   }
 };
 
+const likeCard = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const card = await Card.findByIdAndUpdate(
+      req.params.cardId,
+      { $addToSet: { likes: userId } },
+      { new: true },
+    );
+    if (card === null) {
+      return res.status(404).json({ message: 'Карточка не найдена' });
+    }
+    return res.status(200).json(card);
+  } catch (e) {
+    console.error(e);
+    return res.status(500).json({ message: 'Произошла ошибка' });
+  }
+};
+
+const dislikeCard = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const card = await Card.findByIdAndUpdate(
+      req.params.cardId,
+      { $pull: { likes: userId } },
+      { new: true },
+    );
+    if (card === null) {
+      return res.status(404).json({ message: 'Карточка не найдена' });
+    }
+    return res.status(200).json(card);
+  } catch (e) {
+    console.error(e);
+    return res.status(500).json({ message: 'Произошла ошибка' });
+  }
+};
+
 module.exports = {
   getCards,
   createCard,
   deleteCardById,
+  likeCard,
+  dislikeCard,
 };

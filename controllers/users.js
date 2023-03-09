@@ -35,8 +35,48 @@ const getUserById = async (req, res) => {
   }
 };
 
+const updateUser = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const { name, about } = req.body;
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { name, about },
+      { new: true },
+    );
+    if (user === null) {
+      return res.status(404).json({ message: 'Пользователь не найден' });
+    }
+    return res.status(200).json(user);
+  } catch (e) {
+    console.error(e);
+    return res.status(500).json({ message: 'Произошла ошибка' });
+  }
+};
+
+const updateAvatar = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const { avatar } = req.body;
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { avatar },
+      { new: true },
+    );
+    if (user === null) {
+      return res.status(404).json({ message: 'Пользователь не найден' });
+    }
+    return res.status(200).json(user);
+  } catch (e) {
+    console.error(e);
+    return res.status(500).json({ message: 'Произошла ошибка' });
+  }
+};
+
 module.exports = {
   getUsers,
   createUser,
   getUserById,
+  updateUser,
+  updateAvatar,
 };
