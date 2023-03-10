@@ -50,11 +50,12 @@ const updateUser = async (req, res) => {
     const user = await User.findByIdAndUpdate(
       userId,
       { name, about },
-      { new: true },
+      { new: true, runValidators: true },
     );
-    if (user === null) {
+    if (!user) {
       return res.status(NotFoundError).json({ message: 'Пользователь не найден' });
     }
+    res.send(user);
     return res.status(SUCCESS_CODE_OK).json(user);
   } catch (err) {
     return res.status(ERROR_CODE_DEFAULT).json({ message: 'Произошла ошибка' });
@@ -68,11 +69,12 @@ const updateAvatar = async (req, res) => {
     const user = await User.findByIdAndUpdate(
       userId,
       { avatar },
-      { new: true },
+      { new: true, runValidators: true },
     );
-    if (user === null) {
+    if (!user) {
       return res.status(NotFoundError).json({ message: 'Пользователь не найден' });
     }
+    res.send(user);
     return res.status(SUCCESS_CODE_OK).json(user);
   } catch (err) {
     return res.status(ERROR_CODE_DEFAULT).json({ message: 'Произошла ошибка' });

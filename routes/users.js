@@ -13,7 +13,7 @@ const {
 userRouter.get('/', getUsers);
 userRouter.post('/', createUser);
 userRouter.patch('/me', updateUser);
-userRouter.get('/:userId', getUserById);
 userRouter.patch('/me/avatar', updateAvatar);
+userRouter.get('/:userId', getUserById);
 
 module.exports = userRouter; // экспортировали роутер

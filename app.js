@@ -2,8 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
 const bodyParser = require('body-parser');
-const userRouter = require('./routes/users');
-const cardRouter = require('./routes/cards');
+const routes = require('./routes/index');
 // Слушаем 3000 порт
 const { PORT = 3000 } = process.env;
 
@@ -13,9 +12,7 @@ app.use(express.static(path.join(__dirname)));
 
 app.use(bodyParser.json());
 
-app.use('/users', userRouter);
-
-app.use('/cards', cardRouter);
+app.use(routes);
 
 app.use((req, res, next) => {
   req.user = {
@@ -26,7 +23,7 @@ app.use((req, res, next) => {
 });
 
 mongoose.set('strictQuery', true);
-mongoose.connect('mongodb://localhost:27017/mestodb', {
+mongoose.connect('mongodb://localhost/mestodb', {
   useNewUrlParser: true,
 }, () => {
   console.log('Connected to MongoDB!');
