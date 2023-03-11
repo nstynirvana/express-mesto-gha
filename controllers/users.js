@@ -55,8 +55,7 @@ const updateUser = async (req, res) => {
     if (!user) {
       return res.status(NotFoundError).json({ message: 'Пользователь не найден' });
     }
-    res.send(user);
-    return res.status(SUCCESS_CODE_OK).json(user);
+    return res.status(SUCCESS_CODE_OK).send(user);
   } catch (err) {
     return res.status(ERROR_CODE_DEFAULT).json({ message: 'Произошла ошибка' });
   }
@@ -74,8 +73,7 @@ const updateAvatar = async (req, res) => {
     if (!user) {
       return res.status(NotFoundError).json({ message: 'Пользователь не найден' });
     }
-    res.send(user);
-    return res.status(SUCCESS_CODE_OK).json(user);
+    return res.status(SUCCESS_CODE_OK).send(user);
   } catch (err) {
     return res.status(ERROR_CODE_DEFAULT).json({ message: 'Произошла ошибка' });
   }

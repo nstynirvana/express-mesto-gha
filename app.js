@@ -12,8 +12,6 @@ app.use(express.static(path.join(__dirname)));
 
 app.use(bodyParser.json());
 
-app.use(routes);
-
 app.use((req, res, next) => {
   req.user = {
     _id: '64074943b1d6d71b1df57798', //  _id созданного пользователя
@@ -32,3 +30,5 @@ mongoose.connect('mongodb://localhost/mestodb', {
     console.log(`App listening on port ${PORT}`);
   });
 });
+
+app.use(routes);
