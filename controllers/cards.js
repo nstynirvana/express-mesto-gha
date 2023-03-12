@@ -1,6 +1,5 @@
 const Card = require('../models/card');
 const {
-  // BadRequestError,
   NotFoundError,
 } = require('../errors/errors');
 const {
@@ -35,31 +34,15 @@ const deleteCardById = async (req, res) => {
   try {
     const { cardId } = req.params;
     const card = await Card.findById(cardId);
-    if (card === null) {
+
+    if (!card) {
       return res.status(NotFoundError).json({ message: 'Карточка не найдена' });
     }
-    res.send(card);
-    return res.status(SUCCESS_CODE_OK).json(card);
+    return res.status(SUCCESS_CODE_OK).send(card);
   } catch (err) {
     return res.status(ERROR_CODE_DEFAULT).json({ message: 'Произошла ошибка' });
   }
 };
-
-// const deleteCardById = async (req, res) => {
-//   try {
-//     const { cardId } = req.params;
-//     const card = await Card.findById(cardId);
-//     if (!card) {
-//       res.status(NotFoundError).json({ message: 'Карточка не найдена' });
-//     }
-//     res.send(card);
-//     res.status(SUCCESS_CODE_OK).json(card);
-//   } catch (err) {
-//     if (err.name === 'CastError') {
-//       res.status(BadRequestError).json({ message: 'Неверный формат данных' });
-//     }
-//   }
-// };
 
 const likeCard = async (req, res) => {
   try {
@@ -69,10 +52,10 @@ const likeCard = async (req, res) => {
       { $addToSet: { likes: userId } },
       { new: true },
     );
-    if (card === null) {
+    if (!card) {
       return res.status(NotFoundError).json({ message: 'Карточка не найдена' });
     }
-    return res.status(SUCCESS_CODE_OK).json(card);
+    return res.status(SUCCESS_CODE_OK).send(card);
   } catch (err) {
     return res.status(ERROR_CODE_DEFAULT).json({ message: 'Произошла ошибка' });
   }
@@ -86,10 +69,10 @@ const dislikeCard = async (req, res) => {
       { $pull: { likes: userId } },
       { new: true },
     );
-    if (card === null) {
+    if (!card) {
       return res.status(NotFoundError).json({ message: 'Карточка не найдена' });
     }
-    return res.status(SUCCESS_CODE_OK).json(card);
+    return res.status(SUCCESS_CODE_OK).send(card);
   } catch (err) {
     return res.status(ERROR_CODE_DEFAULT).json({ message: 'Произошла ошибка' });
   }

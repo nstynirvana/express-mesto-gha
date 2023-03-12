@@ -14,21 +14,25 @@ app.use(bodyParser.json());
 
 app.use((req, res, next) => {
   req.user = {
-    _id: '64074943b1d6d71b1df57798', //  _id созданного пользователя
+    _id: '640dcbf5c30fc0798b14d2a8', //  _id созданного пользователя
   };
 
   next();
 });
 
 mongoose.set('strictQuery', true);
-mongoose.connect('mongodb://localhost/mestodb', {
-  useNewUrlParser: true,
-}, () => {
-  console.log('Connected to MongoDB!');
-  app.listen(PORT, () => {
-  // Если всё работает, консоль покажет, какой порт приложение слушает
-    console.log(`App listening on port ${PORT}`);
-  });
-});
+mongoose.connect(
+  'mongodb://127.0.0.1:27017/mestodb',
+  {
+    useNewUrlParser: true,
+  },
+  () => {
+    console.log('Connected to MongoDB!');
+    app.listen(PORT, () => {
+      // Если всё работает, консоль покажет, какой порт приложение слушает
+      console.log(`App listening on port ${PORT}`);
+    });
+  },
+);
 
 app.use(routes);

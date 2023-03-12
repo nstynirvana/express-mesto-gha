@@ -1,8 +1,5 @@
 const User = require('../models/user');
-const {
-  BadRequestError,
-  NotFoundError,
-} = require('../errors/errors');
+const { BadRequestError, NotFoundError } = require('../errors/errors');
 const {
   SUCCESS_CODE_OK,
   SUCCESS_CODE_CREATED,
@@ -53,7 +50,9 @@ const updateUser = async (req, res) => {
       { new: true, runValidators: true },
     );
     if (!user) {
-      return res.status(NotFoundError).json({ message: 'Пользователь не найден' });
+      return res
+        .status(NotFoundError)
+        .json({ message: 'Пользователь не найден' });
     }
     return res.status(SUCCESS_CODE_OK).send(user);
   } catch (err) {
@@ -71,7 +70,9 @@ const updateAvatar = async (req, res) => {
       { new: true, runValidators: true },
     );
     if (!user) {
-      return res.status(NotFoundError).json({ message: 'Пользователь не найден' });
+      return res
+        .status(NotFoundError)
+        .json({ message: 'Пользователь не найден' });
     }
     return res.status(SUCCESS_CODE_OK).send(user);
   } catch (err) {

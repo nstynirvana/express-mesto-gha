@@ -1,6 +1,3 @@
-// const express = require('express');
-
-// const routes = express.Router();
 const routes = require('express').Router();
 
 const userRouter = require('./users');
