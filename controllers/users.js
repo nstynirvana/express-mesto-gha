@@ -20,6 +20,9 @@ const createUser = async (req, res) => {
     const user = await User.create(req.body);
     return res.status(SUCCESS_CODE_CREATED).json(user);
   } catch (err) {
+    if (err.name === 'ValidationError') {
+      res.status(BadRequestError).json({ message: 'Неверный формат данных' });
+    }
     return res.status(ERROR_CODE_DEFAULT).json({ message: 'Произошла ошибка' });
   }
 };
@@ -31,12 +34,14 @@ const getUserById = async (req, res) => {
     if (!user) {
       res.status(NotFoundError).json({ message: 'Пользователь не найден' });
     }
-    res.send(user);
-    res.status(SUCCESS_CODE_OK).json(user);
+    res.status(SUCCESS_CODE_OK).send(user);
+    // res.send(user);
+    // res.status(SUCCESS_CODE_OK).json(user);
   } catch (err) {
     if (err.name === 'CastError') {
       res.status(BadRequestError).json({ message: 'Неверный формат данных' });
     }
+    res.status(ERROR_CODE_DEFAULT).json({ message: 'Произошла ошибка' });
   }
 };
 
@@ -56,6 +61,9 @@ const updateUser = async (req, res) => {
     }
     return res.status(SUCCESS_CODE_OK).send(user);
   } catch (err) {
+    if (err.name === 'ValidationError') {
+      res.status(BadRequestError).json({ message: 'Неверный формат данных' });
+    }
     return res.status(ERROR_CODE_DEFAULT).json({ message: 'Произошла ошибка' });
   }
 };

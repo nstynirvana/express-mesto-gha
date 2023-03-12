@@ -1,5 +1,6 @@
 const Card = require('../models/card');
 const {
+  BadRequestError,
   NotFoundError,
 } = require('../errors/errors');
 const {
@@ -23,9 +24,11 @@ const createCard = async (req, res) => {
     const { name, link } = req.body;
     const ownerId = req.user._id;
     const card = await Card.create({ name, link, owner: ownerId });
-    res.send(card);
-    res.status(SUCCESS_CODE_CREATED).json(card);
+    res.status(SUCCESS_CODE_CREATED).send(card);
   } catch (err) {
+    if (err.name === 'ValidationError') {
+      res.status(BadRequestError).json({ message: 'Неверный формат данных' });
+    }
     res.status(ERROR_CODE_DEFAULT).json({ message: 'Произошла ошибка' });
   }
 };
@@ -40,6 +43,9 @@ const deleteCardById = async (req, res) => {
     }
     return res.status(SUCCESS_CODE_OK).send(card);
   } catch (err) {
+    if (err.name === 'CastError') {
+      res.status(BadRequestError).json({ message: 'Неверный формат данных' });
+    }
     return res.status(ERROR_CODE_DEFAULT).json({ message: 'Произошла ошибка' });
   }
 };
@@ -57,6 +63,9 @@ const likeCard = async (req, res) => {
     }
     return res.status(SUCCESS_CODE_OK).send(card);
   } catch (err) {
+    if (err.name === 'CastError') {
+      res.status(BadRequestError).json({ message: 'Неверный формат данных' });
+    }
     return res.status(ERROR_CODE_DEFAULT).json({ message: 'Произошла ошибка' });
   }
 };
@@ -74,6 +83,9 @@ const dislikeCard = async (req, res) => {
     }
     return res.status(SUCCESS_CODE_OK).send(card);
   } catch (err) {
+    if (err.name === 'CastError') {
+      res.status(BadRequestError).json({ message: 'Неверный формат данных' });
+    }
     return res.status(ERROR_CODE_DEFAULT).json({ message: 'Произошла ошибка' });
   }
 };
