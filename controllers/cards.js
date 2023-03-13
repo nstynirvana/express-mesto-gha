@@ -12,8 +12,7 @@ const {
 const getCards = async (req, res) => {
   try {
     const cards = await Card.find({});
-    res.send(cards);
-    res.status(SUCCESS_CODE_OK).json(cards);
+    res.status(SUCCESS_CODE_OK).send(cards);
   } catch (err) {
     res.status(ERROR_CODE_DEFAULT).json({ message: 'Произошла ошибка' });
   }
@@ -28,6 +27,7 @@ const createCard = async (req, res) => {
   } catch (err) {
     if (err.name === 'ValidationError') {
       res.status(BadRequestError).json({ message: 'Неверный формат данных' });
+      return;
     }
     res.status(ERROR_CODE_DEFAULT).json({ message: 'Произошла ошибка' });
   }
@@ -44,7 +44,7 @@ const deleteCardById = async (req, res) => {
     return res.status(SUCCESS_CODE_OK).send(card);
   } catch (err) {
     if (err.name === 'CastError') {
-      res.status(BadRequestError).json({ message: 'Неверный формат данных' });
+      return res.status(BadRequestError).json({ message: 'Неверный формат данных' });
     }
     return res.status(ERROR_CODE_DEFAULT).json({ message: 'Произошла ошибка' });
   }
@@ -64,7 +64,7 @@ const likeCard = async (req, res) => {
     return res.status(SUCCESS_CODE_OK).send(card);
   } catch (err) {
     if (err.name === 'CastError') {
-      res.status(BadRequestError).json({ message: 'Неверный формат данных' });
+      return res.status(BadRequestError).json({ message: 'Неверный формат данных' });
     }
     return res.status(ERROR_CODE_DEFAULT).json({ message: 'Произошла ошибка' });
   }
@@ -84,7 +84,7 @@ const dislikeCard = async (req, res) => {
     return res.status(SUCCESS_CODE_OK).send(card);
   } catch (err) {
     if (err.name === 'CastError') {
-      res.status(BadRequestError).json({ message: 'Неверный формат данных' });
+      return res.status(BadRequestError).json({ message: 'Неверный формат данных' });
     }
     return res.status(ERROR_CODE_DEFAULT).json({ message: 'Произошла ошибка' });
   }
