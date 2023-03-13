@@ -33,6 +33,7 @@ const getUserById = async (req, res) => {
     const user = await User.findById(userId);
     if (!user) {
       res.status(NotFoundError).json({ message: 'Пользователь не найден' });
+      return;
     }
     res.status(SUCCESS_CODE_OK).send(user);
   } catch (err) {
