@@ -1,12 +1,11 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-const { NODE_ENV, JWT_SECRET } = process.env;
-
 const User = require('../models/user');
 const {
   BadRequestError,
   NotFoundError,
+  AuthError,
 } = require('../errors/errors');
 const {
   SUCCESS_CODE_OK,
@@ -14,24 +13,19 @@ const {
   ERROR_CODE_DEFAULT,
 } = require('../utils/utils');
 
-function login(req, res, next) {
-  const { email } = req.body;
-  return User.findUserByCredentials({ email }).select('+password')
+const login = async (req, res) => {
+  const { email, password } = req.body;
+
+  return User.findUserByCredentials(email, password)
     .then((user) => {
-      const token = jwt.sign(
-        { _id: user._id },
-        NODE_ENV ? JWT_SECRET : 'supersecretkey',
-        { expiresIn: '7d' },
-      );
-      res
-        .cookie('jwt', token, {
-          maxAge: 3600000 * 24 * 7,
-          httpOnly: true,
-        })
-        .send({ jwt: token });
+      const token = jwt.sign({ _id: user._id }, 'supersecretkey', { expiresIn: '7d' });
+      res.send({ token });
+      res.cookie('jwt', token, { maxAge: 3600000 * 24 * 7, httpOnly: true }).send({ jwt: token });
     })
-    .catch(next);
-}
+    .catch((err) => {
+      res.status(AuthError).send({ message: err.message });
+    });
+};
 
 const getUsers = async (req, res) => {
   try {
