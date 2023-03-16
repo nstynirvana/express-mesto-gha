@@ -12,14 +12,6 @@ app.use(express.static(path.join(__dirname)));
 
 app.use(bodyParser.json());
 
-app.use((req, res, next) => {
-  req.user = {
-    _id: '640dcbf5c30fc0798b14d2a8', //  _id созданного пользователя
-  };
-
-  next();
-});
-
 mongoose.set('strictQuery', true);
 mongoose.connect(
   'mongodb://127.0.0.1:27017/mestodb',

@@ -2,8 +2,11 @@ const routes = require('express').Router();
 
 const userRouter = require('./users');
 const cardRouter = require('./cards');
+const { login, createUser } = require('../controllers/users');
 
 routes.use('/users', userRouter);
 routes.use('/cards', cardRouter);
+routes.post('/signin', login);
+routes.post('/signup', createUser);
 
 module.exports = routes;
