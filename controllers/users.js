@@ -20,7 +20,7 @@ function login(req, res, next) {
     .then((user) => {
       const token = jwt.sign(
         { _id: user._id },
-        NODE_ENV ? JWT_SECRET : 'secretkey',
+        NODE_ENV ? JWT_SECRET : 'supersecretkey',
         { expiresIn: '7d' },
       );
       res
