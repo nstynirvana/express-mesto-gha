@@ -1,4 +1,5 @@
 const User = require('../models/user');
+const bcrypt = require('bcryptjs');
 const { BadRequestError, NotFoundError } = require('../errors/errors');
 const {
   SUCCESS_CODE_OK,
@@ -16,9 +17,16 @@ const getUsers = async (req, res) => {
 };
 
 const createUser = async (req, res) => {
+  const {
+    email, password, name, about, avatar,
+  } = req.body;
   try {
-    const user = await User.create(req.body);
-    return res.status(SUCCESS_CODE_CREATED).json(user);
+    const hashPassword = await bcrypt.hash(password, 10);
+    const user = await User.create({
+      email, password: hashPassword, name, about, avatar,
+    });
+    // const user = await User.create(req.body);
+    return res.status(SUCCESS_CODE_CREATED).send(user);
   } catch (err) {
     if (err.name === 'ValidationError') {
       return res.status(BadRequestError).json({ message: 'Неверный формат данных' });
