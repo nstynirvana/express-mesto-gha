@@ -1,4 +1,5 @@
 const express = require('express');
+const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 const path = require('path');
 const bodyParser = require('body-parser');
@@ -11,6 +12,7 @@ const app = express();
 app.use(express.static(path.join(__dirname)));
 
 app.use(bodyParser.json());
+app.use(cookieParser());
 
 mongoose.set('strictQuery', true);
 mongoose.connect(
