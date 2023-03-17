@@ -13,18 +13,33 @@ const {
   ERROR_CODE_DEFAULT,
 } = require('../utils/utils');
 
-const login = async (req, res) => {
+const login = (req, res) => {
   const { email, password } = req.body;
+  let userId;
+  try {
+    User.findOne({ email }).select('+password')
+      .then((user) => {
+        if (!user) {
+          res.status(AuthError).send({ message: 'Неправильный мейл или пароль' });
+        }
+        userId = user._id;
+        return bcrypt.compare(password, user.password);
+      })
+      .then((matched) => {
+        if (!matched) {
+          res.status(AuthError).send({ message: 'Неправильный мейл или пароль' });
+        }
+        const token = jwt.sign({ _id: userId }, 'super-secret-key', { expiresIn: '7d' });
+        res.cookie('jwt', token, {
+          maxAge: 3600000 * 24 * 7,
+          httpOnly: true,
+        });
 
-  return User.findUserByCredentials(email, password)
-    .then((user) => {
-      const token = jwt.sign({ _id: user._id }, 'supersecretkey', { expiresIn: '7d' });
-      res.send({ token });
-      res.cookie('jwt', token, { maxAge: 3600000 * 24 * 7, httpOnly: true }).send({ jwt: token });
-    })
-    .catch((err) => {
-      res.status(AuthError).send({ message: err.message });
-    });
+        return res.status(SUCCESS_CODE_OK).send({ token });
+      });
+  } catch (err) {
+    res.status(ERROR_CODE_DEFAULT).json({ message: 'Произошла ошибка' });
+  }
 };
 
 const getUsers = async (req, res) => {
@@ -42,10 +57,12 @@ const createUser = async (req, res) => {
   } = req.body;
   try {
     const hashPassword = await bcrypt.hash(password, 10);
-    const user = User.create({
+    User.create({
       email, password: hashPassword, name, about, avatar,
     });
-    return res.status(SUCCESS_CODE_CREATED).send(user);
+    return res.status(SUCCESS_CODE_CREATED).send({
+      email, name, about, avatar,
+    });
   } catch (err) {
     if (err.name === 'ValidationError') {
       return res.status(BadRequestError).json({ message: 'Неверный формат данных' });
