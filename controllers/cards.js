@@ -27,62 +27,34 @@ const createCard = async (req, res) => {
     res.status(SUCCESS_CODE_CREATED).send(card);
   } catch (err) {
     if (err.name === 'ValidationError') {
-      res.status(BadRequestError).json({ message: 'Неверный формат данных' });
-      return;
+      throw new BadRequestError('Неверный формат данных');
     }
     res.status(ERROR_CODE_DEFAULT).json({ message: 'Произошла ошибка' });
   }
 };
 
-// const deleteCardById = async (req, res) => {
-//   try {
-//     const { cardId } = req.params;
-//     const card = await Card.findById(cardId).populate('owner');
-
-//     if (!card) {
-//       return res.status(NotFoundError).json({ message: 'Карточка не найдена' });
-//     }
-//     const ownerId = card.owner.id;
-//     const userId = req.user._id;
-
-//     if (ownerId !== userId) {
-//       return res.status(ForbiddenError).json({ message: 'Нельзя удалить чужую карточку' });
-//     }
-//     await card.remove();
-//     return res.status(SUCCESS_CODE_OK).send(card);
-//   } catch (err) {
-//     if (err.name === 'CastError') {
-//       return res.status(BadRequestError).json({ message: 'Неверный формат данных' });
-//     }
-//     return res.status(ERROR_CODE_DEFAULT).json({ message: 'Произошла ошибка' });
-//   }
-// };
-
-const deleteCardById = async (req, res, next) => {
+const deleteCardById = async (req, res) => {
   try {
     const { cardId } = req.params;
     const card = await Card.findById(cardId).populate('owner');
 
     if (!card) {
-      res.status(NotFoundError).json({ message: 'Карточка не найдена' });
+      throw new NotFoundError('Карточка не найдена');
     }
     const ownerId = card.owner.id;
     const userId = req.user._id;
 
     if (ownerId !== userId) {
-      res.status(ForbiddenError).json({ message: 'Нельзя удалить чужую карточку' });
+      throw new ForbiddenError('Нельзя удалить чужую карточку');
     }
     await card.remove();
     res.status(SUCCESS_CODE_OK).send(card);
   } catch (err) {
-    next(err);
+    if (err.name === 'CastError') {
+      throw new BadRequestError('Неверный формат данных');
+    }
+    res.status(err.statusCode).send({ message: err.message });
   }
-  // catch (err) {
-  //   if (err.name === 'CastError') {
-  //     return res.status(BadRequestError).json({ message: 'Неверный формат данных' });
-  //   }
-  // }
-  // return res.status(ERROR_CODE_DEFAULT).json({ message: 'Произошла ошибка' });
 };
 
 const likeCard = async (req, res) => {
@@ -94,12 +66,12 @@ const likeCard = async (req, res) => {
       { new: true },
     );
     if (!card) {
-      return res.status(NotFoundError).json({ message: 'Карточка не найдена' });
+      throw new NotFoundError('Карточка не найдена');
     }
     return res.status(SUCCESS_CODE_OK).send(card);
   } catch (err) {
     if (err.name === 'CastError') {
-      return res.status(BadRequestError).json({ message: 'Неверный формат данных' });
+      throw new BadRequestError('Неверный формат данных');
     }
     return res.status(ERROR_CODE_DEFAULT).json({ message: 'Произошла ошибка' });
   }
@@ -114,12 +86,12 @@ const dislikeCard = async (req, res) => {
       { new: true },
     );
     if (!card) {
-      return res.status(NotFoundError).json({ message: 'Карточка не найдена' });
+      throw new NotFoundError('Карточка не найдена');
     }
     return res.status(SUCCESS_CODE_OK).send(card);
   } catch (err) {
     if (err.name === 'CastError') {
-      return res.status(BadRequestError).json({ message: 'Неверный формат данных' });
+      throw new BadRequestError('Неверный формат данных');
     }
     return res.status(ERROR_CODE_DEFAULT).json({ message: 'Произошла ошибка' });
   }

@@ -22,14 +22,14 @@ const login = (req, res) => {
     User.findOne({ email }).select('+password')
       .then((user) => {
         if (!user) {
-          res.status(AuthError).send({ message: 'Неправильный мейл или пароль' });
+          throw new AuthError('Неправильный мейл или пароль');
         }
         userId = user._id;
         return bcrypt.compare(password, user.password);
       })
       .then((matched) => {
         if (!matched) {
-          res.status(AuthError).send({ message: 'Неправильный мейл или пароль' });
+          throw new AuthError('Неправильный мейл или пароль');
         }
         const token = jwt.sign({ _id: userId }, NODE_ENV ? JWT_SECRET : 'super-secret-key', { expiresIn: '7d' });
         res.cookie('jwt', token, {
@@ -67,7 +67,7 @@ const createUser = async (req, res) => {
     });
   } catch (err) {
     if (err.name === 'ValidationError') {
-      return res.status(BadRequestError).json({ message: 'Неверный формат данных' });
+      throw new BadRequestError('Неверный формат данных');
     }
     return res.status(ERROR_CODE_DEFAULT).json({ message: 'Произошла ошибка' });
   }
@@ -78,14 +78,12 @@ const getUserById = async (req, res) => {
     const { userId } = req.params;
     const user = await User.findById(userId);
     if (!user) {
-      res.status(NotFoundError).json({ message: 'Пользователь не найден' });
-      return;
+      throw new NotFoundError('Пользователь не найден');
     }
     res.status(SUCCESS_CODE_OK).send(user);
   } catch (err) {
     if (err.name === 'CastError') {
-      res.status(BadRequestError).json({ message: 'Неверный формат данных' });
-      return;
+      throw new BadRequestError('Неверный формат данных');
     }
     res.status(ERROR_CODE_DEFAULT).json({ message: 'Произошла ошибка' });
   }
@@ -97,15 +95,13 @@ const getInfoUser = async (req, res) => {
     const user = await User.findById(userId);
 
     if (!user) {
-      res.status(NotFoundError).json({ message: 'Пользователь не найден' });
-      return;
+      throw new NotFoundError('Пользователь не найден');
     }
 
     res.status(SUCCESS_CODE_OK).send(user);
   } catch (err) {
     if (err.name === 'CastError') {
-      res.status(BadRequestError).json({ message: 'Неверный формат данных' });
-      return;
+      throw new BadRequestError('Неверный формат данных');
     }
     res.status(ERROR_CODE_DEFAULT).json({ message: 'Произошла ошибка' });
   }
@@ -121,12 +117,12 @@ const updateUser = async (req, res) => {
       { new: true, runValidators: true },
     );
     if (!user) {
-      return res.status(NotFoundError).json({ message: 'Пользователь не найден' });
+      throw new NotFoundError('Пользователь не найден');
     }
     return res.status(SUCCESS_CODE_OK).send(user);
   } catch (err) {
     if (err.name === 'ValidationError') {
-      return res.status(BadRequestError).json({ message: 'Неверный формат данных' });
+      throw new BadRequestError('Неверный формат данных');
     }
     return res.status(ERROR_CODE_DEFAULT).json({ message: 'Произошла ошибка' });
   }
@@ -142,7 +138,7 @@ const updateAvatar = async (req, res) => {
       { new: true, runValidators: true },
     );
     if (!user) {
-      return res.status(NotFoundError).json({ message: 'Пользователь не найден' });
+      throw new NotFoundError('Пользователь не найден');
     }
     return res.status(SUCCESS_CODE_OK).send(user);
   } catch (err) {
