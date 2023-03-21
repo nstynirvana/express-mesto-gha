@@ -7,7 +7,6 @@ const {
 const {
   SUCCESS_CODE_OK,
   SUCCESS_CODE_CREATED,
-  // ERROR_CODE_DEFAULT,
 } = require('../utils/utils');
 
 const getCards = async (req, res, next) => {
@@ -15,7 +14,6 @@ const getCards = async (req, res, next) => {
     const cards = await Card.find({});
     res.status(SUCCESS_CODE_OK).send(cards);
   } catch (err) {
-    // res.status(ERROR_CODE_DEFAULT).json({ message: 'На сервере произошла ошибка' });
     next(err);
   }
 };
@@ -32,7 +30,6 @@ const createCard = async (req, res, next) => {
     } else {
       next(err);
     }
-    // res.status(ERROR_CODE_DEFAULT).json({ message: 'На сервере произошла ошибка' });
   }
 };
 
@@ -58,7 +55,6 @@ const deleteCardById = async (req, res, next) => {
     } else {
       next(err);
     }
-    // res.status(err.statusCode).send({ message: err.message });
   }
 };
 
@@ -80,7 +76,6 @@ const likeCard = async (req, res, next) => {
     } else {
       next(err);
     }
-    // return res.status(ERROR_CODE_DEFAULT).json({ message: 'На сервере произошла ошибка' });
   }
 };
 
@@ -102,7 +97,6 @@ const dislikeCard = async (req, res, next) => {
     } else {
       next(err);
     }
-    // return res.status(ERROR_CODE_DEFAULT).json({ message: 'На сервере произошла ошибка' });
   }
 };
 
