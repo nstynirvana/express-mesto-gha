@@ -26,7 +26,7 @@ const createCard = async (req, res, next) => {
     res.status(SUCCESS_CODE_CREATED).send(card);
   } catch (err) {
     if (err.name === 'ValidationError') {
-      throw new BadRequestError('Неверный формат данных');
+      next(new BadRequestError('Неверный формат данных'));
     } else {
       next(err);
     }
@@ -51,7 +51,7 @@ const deleteCardById = async (req, res, next) => {
     res.status(SUCCESS_CODE_OK).send(card);
   } catch (err) {
     if (err.name === 'CastError') {
-      throw new BadRequestError('Неверный формат данных');
+      next(new BadRequestError('Неверный формат данных'));
     } else {
       next(err);
     }
@@ -72,7 +72,7 @@ const likeCard = async (req, res, next) => {
     res.status(SUCCESS_CODE_OK).send(card);
   } catch (err) {
     if (err.name === 'CastError') {
-      throw new BadRequestError('Неверный формат данных');
+      next(new BadRequestError('Неверный формат данных'));
     } else {
       next(err);
     }
@@ -93,7 +93,7 @@ const dislikeCard = async (req, res, next) => {
     res.status(SUCCESS_CODE_OK).send(card);
   } catch (err) {
     if (err.name === 'CastError') {
-      throw new BadRequestError('Неверный формат данных');
+      next(new BadRequestError('Неверный формат данных'));
     } else {
       next(err);
     }

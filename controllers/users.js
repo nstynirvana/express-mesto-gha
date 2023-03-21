@@ -69,7 +69,7 @@ const createUser = async (req, res, next) => {
     if (err.code === 11000) {
       next(new ConflictError('Пользователь уже зарегистрирован'));
     } else if (err.name === 'ValidationError') {
-      throw new BadRequestError('Неверный формат данных');
+      next(new BadRequestError('Неверный формат данных'));
     } else {
       next(err);
     }
@@ -86,7 +86,7 @@ const getUserById = async (req, res, next) => {
     res.status(SUCCESS_CODE_OK).send(user);
   } catch (err) {
     if (err.name === 'CastError') {
-      throw new BadRequestError('Неверный формат данных');
+      next(new BadRequestError('Неверный формат данных'));
     } else {
       next(err);
     }
@@ -105,7 +105,7 @@ const getInfoUser = async (req, res, next) => {
     res.status(SUCCESS_CODE_OK).send(user);
   } catch (err) {
     if (err.name === 'CastError') {
-      throw new BadRequestError('Неверный формат данных');
+      next(new BadRequestError('Неверный формат данных'));
     } else {
       next(err);
     }
@@ -127,7 +127,7 @@ const updateUser = async (req, res, next) => {
     res.status(SUCCESS_CODE_OK).send(user);
   } catch (err) {
     if (err.name === 'ValidationError') {
-      throw new BadRequestError('Неверный формат данных');
+      next(new BadRequestError('Неверный формат данных'));
     } else {
       next(err);
     }
