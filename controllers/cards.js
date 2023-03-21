@@ -7,19 +7,20 @@ const {
 const {
   SUCCESS_CODE_OK,
   SUCCESS_CODE_CREATED,
-  ERROR_CODE_DEFAULT,
+  // ERROR_CODE_DEFAULT,
 } = require('../utils/utils');
 
-const getCards = async (req, res) => {
+const getCards = async (req, res, next) => {
   try {
     const cards = await Card.find({});
     res.status(SUCCESS_CODE_OK).send(cards);
   } catch (err) {
-    res.status(ERROR_CODE_DEFAULT).json({ message: 'Произошла ошибка' });
+    // res.status(ERROR_CODE_DEFAULT).json({ message: 'На сервере произошла ошибка' });
+    next(err);
   }
 };
 
-const createCard = async (req, res) => {
+const createCard = async (req, res, next) => {
   try {
     const { name, link } = req.body;
     const ownerId = req.user._id;
@@ -28,12 +29,14 @@ const createCard = async (req, res) => {
   } catch (err) {
     if (err.name === 'ValidationError') {
       throw new BadRequestError('Неверный формат данных');
+    } else {
+      next(err);
     }
-    res.status(ERROR_CODE_DEFAULT).json({ message: 'Произошла ошибка' });
+    // res.status(ERROR_CODE_DEFAULT).json({ message: 'На сервере произошла ошибка' });
   }
 };
 
-const deleteCardById = async (req, res) => {
+const deleteCardById = async (req, res, next) => {
   try {
     const { cardId } = req.params;
     const card = await Card.findById(cardId).populate('owner');
@@ -52,12 +55,14 @@ const deleteCardById = async (req, res) => {
   } catch (err) {
     if (err.name === 'CastError') {
       throw new BadRequestError('Неверный формат данных');
+    } else {
+      next(err);
     }
-    res.status(err.statusCode).send({ message: err.message });
+    // res.status(err.statusCode).send({ message: err.message });
   }
 };
 
-const likeCard = async (req, res) => {
+const likeCard = async (req, res, next) => {
   try {
     const userId = req.user._id;
     const card = await Card.findByIdAndUpdate(
@@ -68,16 +73,18 @@ const likeCard = async (req, res) => {
     if (!card) {
       throw new NotFoundError('Карточка не найдена');
     }
-    return res.status(SUCCESS_CODE_OK).send(card);
+    res.status(SUCCESS_CODE_OK).send(card);
   } catch (err) {
     if (err.name === 'CastError') {
       throw new BadRequestError('Неверный формат данных');
+    } else {
+      next(err);
     }
-    return res.status(ERROR_CODE_DEFAULT).json({ message: 'Произошла ошибка' });
+    // return res.status(ERROR_CODE_DEFAULT).json({ message: 'На сервере произошла ошибка' });
   }
 };
 
-const dislikeCard = async (req, res) => {
+const dislikeCard = async (req, res, next) => {
   try {
     const userId = req.user._id;
     const card = await Card.findByIdAndUpdate(
@@ -88,12 +95,14 @@ const dislikeCard = async (req, res) => {
     if (!card) {
       throw new NotFoundError('Карточка не найдена');
     }
-    return res.status(SUCCESS_CODE_OK).send(card);
+    res.status(SUCCESS_CODE_OK).send(card);
   } catch (err) {
     if (err.name === 'CastError') {
       throw new BadRequestError('Неверный формат данных');
+    } else {
+      next(err);
     }
-    return res.status(ERROR_CODE_DEFAULT).json({ message: 'Произошла ошибка' });
+    // return res.status(ERROR_CODE_DEFAULT).json({ message: 'На сервере произошла ошибка' });
   }
 };
 

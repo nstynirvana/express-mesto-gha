@@ -12,10 +12,10 @@ const {
 const {
   SUCCESS_CODE_OK,
   SUCCESS_CODE_CREATED,
-  ERROR_CODE_DEFAULT,
+  // ERROR_CODE_DEFAULT,
 } = require('../utils/utils');
 
-const login = (req, res) => {
+const login = (req, res, next) => {
   const { email, password } = req.body;
   let userId;
   try {
@@ -40,20 +40,22 @@ const login = (req, res) => {
         return res.status(SUCCESS_CODE_OK).send({ token });
       });
   } catch (err) {
-    res.status(ERROR_CODE_DEFAULT).json({ message: 'Произошла ошибка' });
+    next(err);
+    // res.status(ERROR_CODE_DEFAULT).json({ message: 'На сервере произошла ошибка' });
   }
 };
 
-const getUsers = async (req, res) => {
+const getUsers = async (req, res, next) => {
   try {
     const users = await User.find({});
-    return res.status(SUCCESS_CODE_OK).json(users);
+    res.status(SUCCESS_CODE_OK).json(users);
   } catch (err) {
-    return res.status(ERROR_CODE_DEFAULT).json({ message: 'Произошла ошибка' });
+    next(err);
+    // return res.status(ERROR_CODE_DEFAULT).json({ message: 'На сервере произошла ошибка' });
   }
 };
 
-const createUser = async (req, res) => {
+const createUser = async (req, res, next) => {
   const {
     email, password, name, about, avatar,
   } = req.body;
@@ -62,18 +64,20 @@ const createUser = async (req, res) => {
     User.create({
       email, password: hashPassword, name, about, avatar,
     });
-    return res.status(SUCCESS_CODE_CREATED).send({
+    res.status(SUCCESS_CODE_CREATED).send({
       email, name, about, avatar,
     });
   } catch (err) {
     if (err.name === 'ValidationError') {
       throw new BadRequestError('Неверный формат данных');
+    } else {
+      next(err);
     }
-    return res.status(ERROR_CODE_DEFAULT).json({ message: 'Произошла ошибка' });
+    // return res.status(ERROR_CODE_DEFAULT).json({ message: 'На сервере произошла ошибка' });
   }
 };
 
-const getUserById = async (req, res) => {
+const getUserById = async (req, res, next) => {
   try {
     const { userId } = req.params;
     const user = await User.findById(userId);
@@ -84,12 +88,14 @@ const getUserById = async (req, res) => {
   } catch (err) {
     if (err.name === 'CastError') {
       throw new BadRequestError('Неверный формат данных');
+    } else {
+      next(err);
     }
-    res.status(ERROR_CODE_DEFAULT).json({ message: 'Произошла ошибка' });
+    // res.status(ERROR_CODE_DEFAULT).json({ message: 'На сервере произошла ошибка' });
   }
 };
 
-const getInfoUser = async (req, res) => {
+const getInfoUser = async (req, res, next) => {
   try {
     const userId = req.user._id;
     const user = await User.findById(userId);
@@ -102,12 +108,14 @@ const getInfoUser = async (req, res) => {
   } catch (err) {
     if (err.name === 'CastError') {
       throw new BadRequestError('Неверный формат данных');
+    } else {
+      next(err);
     }
-    res.status(ERROR_CODE_DEFAULT).json({ message: 'Произошла ошибка' });
+    // res.status(ERROR_CODE_DEFAULT).json({ message: 'На сервере произошла ошибка' });
   }
 };
 
-const updateUser = async (req, res) => {
+const updateUser = async (req, res, next) => {
   try {
     const userId = req.user._id;
     const { name, about } = req.body;
@@ -119,16 +127,18 @@ const updateUser = async (req, res) => {
     if (!user) {
       throw new NotFoundError('Пользователь не найден');
     }
-    return res.status(SUCCESS_CODE_OK).send(user);
+    res.status(SUCCESS_CODE_OK).send(user);
   } catch (err) {
     if (err.name === 'ValidationError') {
       throw new BadRequestError('Неверный формат данных');
+    } else {
+      next(err);
     }
-    return res.status(ERROR_CODE_DEFAULT).json({ message: 'Произошла ошибка' });
+    // return res.status(ERROR_CODE_DEFAULT).json({ message: 'На сервере произошла ошибка' });
   }
 };
 
-const updateAvatar = async (req, res) => {
+const updateAvatar = async (req, res, next) => {
   try {
     const userId = req.user._id;
     const { avatar } = req.body;
@@ -140,9 +150,10 @@ const updateAvatar = async (req, res) => {
     if (!user) {
       throw new NotFoundError('Пользователь не найден');
     }
-    return res.status(SUCCESS_CODE_OK).send(user);
+    res.status(SUCCESS_CODE_OK).send(user);
   } catch (err) {
-    return res.status(ERROR_CODE_DEFAULT).json({ message: 'Произошла ошибка' });
+    next(err);
+    // return res.status(ERROR_CODE_DEFAULT).json({ message: 'На сервере произошла ошибка' });
   }
 };
 
