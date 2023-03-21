@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 
 const User = require('../models/user');
 const {
+  ConflictError,
   BadRequestError,
   NotFoundError,
   AuthError,
@@ -12,7 +13,6 @@ const {
 const {
   SUCCESS_CODE_OK,
   SUCCESS_CODE_CREATED,
-  // ERROR_CODE_DEFAULT,
 } = require('../utils/utils');
 
 const login = (req, res, next) => {
@@ -41,7 +41,6 @@ const login = (req, res, next) => {
       });
   } catch (err) {
     next(err);
-    // res.status(ERROR_CODE_DEFAULT).json({ message: 'На сервере произошла ошибка' });
   }
 };
 
@@ -51,7 +50,6 @@ const getUsers = async (req, res, next) => {
     res.status(SUCCESS_CODE_OK).json(users);
   } catch (err) {
     next(err);
-    // return res.status(ERROR_CODE_DEFAULT).json({ message: 'На сервере произошла ошибка' });
   }
 };
 
@@ -70,10 +68,11 @@ const createUser = async (req, res, next) => {
   } catch (err) {
     if (err.name === 'ValidationError') {
       throw new BadRequestError('Неверный формат данных');
+    } else if (err.code === 11000) {
+      next(new ConflictError('Пользователь уже зарегистрирован'));
     } else {
       next(err);
     }
-    // return res.status(ERROR_CODE_DEFAULT).json({ message: 'На сервере произошла ошибка' });
   }
 };
 
@@ -91,7 +90,6 @@ const getUserById = async (req, res, next) => {
     } else {
       next(err);
     }
-    // res.status(ERROR_CODE_DEFAULT).json({ message: 'На сервере произошла ошибка' });
   }
 };
 
@@ -111,7 +109,6 @@ const getInfoUser = async (req, res, next) => {
     } else {
       next(err);
     }
-    // res.status(ERROR_CODE_DEFAULT).json({ message: 'На сервере произошла ошибка' });
   }
 };
 
@@ -134,7 +131,6 @@ const updateUser = async (req, res, next) => {
     } else {
       next(err);
     }
-    // return res.status(ERROR_CODE_DEFAULT).json({ message: 'На сервере произошла ошибка' });
   }
 };
 
@@ -153,7 +149,6 @@ const updateAvatar = async (req, res, next) => {
     res.status(SUCCESS_CODE_OK).send(user);
   } catch (err) {
     next(err);
-    // return res.status(ERROR_CODE_DEFAULT).json({ message: 'На сервере произошла ошибка' });
   }
 };
 
