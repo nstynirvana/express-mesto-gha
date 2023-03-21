@@ -18,6 +18,8 @@ app.use(bodyParser.json());
 
 app.use(cookieParser());
 
+app.use(routes);
+
 app.use(errors());
 
 app.use(handleErrors);
@@ -35,5 +37,3 @@ mongoose.connect(
     });
   },
 );
-
-app.use(routes);
