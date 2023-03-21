@@ -68,6 +68,8 @@ const createUser = async (req, res, next) => {
   } catch (err) {
     if (err.code === 11000) {
       next(new ConflictError('Пользователь уже зарегистрирован'));
+    } else if (err.name === 'ValidationError') {
+      throw new BadRequestError('Неверный формат данных');
     } else {
       next(err);
     }
