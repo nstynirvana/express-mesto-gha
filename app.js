@@ -5,7 +5,7 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const { errors } = require('celebrate');
 const routes = require('./routes/index');
-const { handleErrors } = require('./middlewares/handlerErrors');
+const { handleErrors } = require('./middlewares/handleErrors');
 
 // Слушаем 3000 порт
 const { PORT = 3000 } = process.env;
@@ -26,7 +26,7 @@ app.use(handleErrors);
 
 mongoose.set('strictQuery', true);
 mongoose.connect(
-  'mongodb://127.0.0.1:27017/mestodb',
+  'mongodb://localhost:27017/mestodb',
   {
     useNewUrlParser: true,
   },

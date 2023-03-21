@@ -36,7 +36,6 @@ const login = (req, res, next) => {
           maxAge: 3600000 * 24 * 7,
           httpOnly: true,
         });
-
         return res.status(SUCCESS_CODE_OK).send({ token });
       });
   } catch (err) {
@@ -97,11 +96,9 @@ const getInfoUser = async (req, res, next) => {
   try {
     const userId = req.user._id;
     const user = await User.findById(userId);
-
     if (!user) {
       throw new NotFoundError('Пользователь не найден');
     }
-
     res.status(SUCCESS_CODE_OK).send(user);
   } catch (err) {
     if (err.name === 'CastError') {
