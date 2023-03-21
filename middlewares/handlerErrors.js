@@ -7,4 +7,4 @@ function handleErrors(err, req, res, next) {
   next();
 }
 
-module.exports = { handleErrors };
+module.exports = handleErrors;
