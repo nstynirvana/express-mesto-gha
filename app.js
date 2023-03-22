@@ -2,7 +2,7 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 const path = require('path');
-// const bodyParser = require('body-parser');
+const bodyParser = require('body-parser');
 const { errors } = require('celebrate');
 const routes = require('./routes/index');
 const { handleErrors } = require('./middlewares/handleErrors');
@@ -15,7 +15,7 @@ const app = express();
 
 app.use(express.static(path.join(__dirname)));
 
-// app.use(bodyParser.json());
+app.use(bodyParser.json());
 
 app.use(cookieParser());
 
