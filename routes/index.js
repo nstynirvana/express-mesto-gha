@@ -22,7 +22,7 @@ routes.post(
       password: Joi.string().required(),
       name: Joi.string().min(2).max(30),
       about: Joi.string().min(2).max(30),
-      avatar: Joi.string().custom(validateSchema),
+      avatar: Joi.string().pattern(validateSchema),
     }),
   }),
   createUser,
