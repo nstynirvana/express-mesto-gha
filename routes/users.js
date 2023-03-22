@@ -15,6 +15,7 @@ const {
 } = require('../controllers/users');
 
 userRouter.get('/', getUsers);
+
 userRouter.get('/me', getInfoUser);
 
 userRouter.patch(
