@@ -1,3 +1,4 @@
+const express = require('express');
 const routes = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
 
@@ -6,6 +7,9 @@ const cardRouter = require('./cards');
 const { login, createUser } = require('../controllers/users');
 const auth = require('../middlewares/auth');
 const { validateSchema } = require('../utils/validateSchema');
+const { NotFoundError } = require('../errors/errors');
+
+routes.all('*', express.json());
 
 routes.post('/signin', celebrate({
   body: Joi.object().keys({
@@ -32,5 +36,9 @@ routes.use(auth);
 
 routes.use('/users', userRouter);
 routes.use('/cards', cardRouter);
+
+routes.all('*', (req, res, next) => {
+  next(new NotFoundError('Не найден адрес запроса'));
+});
 
 module.exports = routes;
