@@ -39,7 +39,7 @@ userRouter.patch(
   updateAvatar,
 );
 
-userRouter.patch(
+userRouter.get(
   '/:userId',
   celebrate({
     params: Joi.object().keys({
