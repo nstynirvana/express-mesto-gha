@@ -39,8 +39,6 @@ userRouter.patch(
   updateAvatar,
 );
 
-userRouter.get('/:userId', getUserById);
-
 userRouter.patch(
   '/:userId',
   celebrate({
