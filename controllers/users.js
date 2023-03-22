@@ -15,34 +15,6 @@ const {
   SUCCESS_CODE_CREATED,
 } = require('../utils/utils');
 
-// const login = (req, res, next) => {
-//   const { email, password } = req.body;
-//   let userId;
-//   try {
-//     User.findOne({ email }).select('+password')
-//       .then((user) => {
-//         if (!user) {
-//           throw new AuthError('Неправильный мейл или пароль');
-//         }
-//         userId = user._id;
-//         return bcrypt.compare(password, user.password);
-//       })
-//       .then((matched) => {
-//         if (!matched) {
-//           throw new AuthError('Неправильный мейл или пароль');
-//         }
-//         const token = jwt.sign({ _id: userId }, NODE_ENV ? JWT_SECRET : 'super-secret-key', { expiresIn: '7d' });
-//         res.cookie('jwt', token, {
-//           maxAge: 3600000 * 24 * 7,
-//           httpOnly: true,
-//         });
-//         return res.status(SUCCESS_CODE_OK).send({ token });
-//       });
-//   } catch (err) {
-//     next(err);
-//   }
-// };
-
 const login = (req, res, next) => {
   const { email, password } = req.body;
   let userId;
@@ -78,29 +50,6 @@ const getUsers = async (req, res, next) => {
     next(err);
   }
 };
-
-// const createUser = async (req, res, next) => {
-//   const {
-//     email, password, name, about, avatar,
-//   } = req.body;
-//   try {
-//     const hashPassword = await bcrypt.hash(password, 10);
-//     User.create({
-//       email, password: hashPassword, name, about, avatar,
-//     });
-//     res.status(SUCCESS_CODE_CREATED).send({
-//       email, name, about, avatar,
-//     });
-//   } catch (err) {
-//     if (err.name === 'ValidationError') {
-//       next(new BadRequestError('Неверный формат данных'));
-//     } else if (err.code === 11000) {
-//       next(new ConflictError('Пользователь уже зарегистрирован'));
-//     } else {
-//       next(err);
-//     }
-//   }
-// };
 
 const createUser = (req, res, next) => {
   const {
