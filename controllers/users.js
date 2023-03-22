@@ -15,32 +15,59 @@ const {
   SUCCESS_CODE_CREATED,
 } = require('../utils/utils');
 
+// const login = (req, res, next) => {
+//   const { email, password } = req.body;
+//   let userId;
+//   try {
+//     User.findOne({ email }).select('+password')
+//       .then((user) => {
+//         if (!user) {
+//           throw new AuthError('Неправильный мейл или пароль');
+//         }
+//         userId = user._id;
+//         return bcrypt.compare(password, user.password);
+//       })
+//       .then((matched) => {
+//         if (!matched) {
+//           throw new AuthError('Неправильный мейл или пароль');
+//         }
+//         const token = jwt.sign({ _id: userId }, NODE_ENV ? JWT_SECRET : 'super-secret-key', { expiresIn: '7d' });
+//         res.cookie('jwt', token, {
+//           maxAge: 3600000 * 24 * 7,
+//           httpOnly: true,
+//         });
+//         return res.status(SUCCESS_CODE_OK).send({ token });
+//       });
+//   } catch (err) {
+//     next(err);
+//   }
+// };
+
 const login = (req, res, next) => {
   const { email, password } = req.body;
   let userId;
-  try {
-    User.findOne({ email }).select('+password')
-      .then((user) => {
-        if (!user) {
-          throw new AuthError('Неправильный мейл или пароль');
-        }
-        userId = user._id;
-        return bcrypt.compare(password, user.password);
-      })
-      .then((matched) => {
-        if (!matched) {
-          throw new AuthError('Неправильный мейл или пароль');
-        }
-        const token = jwt.sign({ _id: userId }, NODE_ENV ? JWT_SECRET : 'super-secret-key', { expiresIn: '7d' });
-        res.cookie('jwt', token, {
-          maxAge: 3600000 * 24 * 7,
-          httpOnly: true,
-        });
-        return res.status(SUCCESS_CODE_OK).send({ token });
+  User.findOne({ email }).select('+password')
+    .then((user) => {
+      if (!user) {
+        throw new AuthError('Неправильный мейл или пароль');
+      }
+      userId = user._id;
+      return bcrypt.compare(password, user.password);
+    })
+    .then((matched) => {
+      if (!matched) {
+        throw new AuthError('Неправильный мейл или пароль');
+      }
+      const token = jwt.sign({ _id: userId }, NODE_ENV ? JWT_SECRET : 'super-secret-key', { expiresIn: '7d' });
+      res.cookie('jwt', token, {
+        maxAge: 3600000 * 24 * 7,
+        httpOnly: true,
       });
-  } catch (err) {
-    next(err);
-  }
+      return res.status(SUCCESS_CODE_OK).send({ token });
+    })
+    .catch((err) => {
+      next(err);
+    });
 };
 
 const getUsers = async (req, res, next) => {
