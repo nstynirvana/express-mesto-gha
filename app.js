@@ -13,11 +13,13 @@ const { PORT = 3000 } = process.env;
 
 const app = express();
 
-app.use(cookieParser());
-
 app.use(express.static(path.join(__dirname)));
 
 app.use(bodyParser.json());
+
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(cookieParser());
 
 app.use(routes);
 
